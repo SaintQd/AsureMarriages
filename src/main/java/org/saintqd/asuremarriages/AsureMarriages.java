@@ -1,25 +1,25 @@
-package org.saintqd.vineriummarriages;
+package org.saintqd.asuremarriages;
 
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.saintqd.vineriumlib.VineriumLib;
-import org.saintqd.vineriumlib.utils.ResourceUtils;
-import org.saintqd.vineriumlib.utils.VinUtils;
-import org.saintqd.vineriummarriages.commands.MarryCommandsManager;
-import org.saintqd.vineriummarriages.listeners.PlayerListener;
-import org.saintqd.vineriummarriages.managers.MarriedPlayersManager;
-import org.saintqd.vineriummarriages.placeholders.VinMarriagePlaceholders;
+import org.saintqd.asurelib.AsureLib;
+import org.saintqd.asurelib.utils.AsureUtils;
+import org.saintqd.asurelib.utils.ResourceUtils;
+import org.saintqd.asuremarriages.commands.MarryCommandsManager;
+import org.saintqd.asuremarriages.listeners.PlayerListener;
+import org.saintqd.asuremarriages.managers.MarriedPlayersManager;
+import org.saintqd.asuremarriages.placeholders.AsureMarriagesPlaceholders;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class VineriumMarriages extends JavaPlugin {
+public class AsureMarriages extends JavaPlugin {
 
-    private static VineriumMarriages plugin;
+    private static AsureMarriages plugin;
     private MarriedPlayersManager marriedPlayersManager;
-    private VinMarriagePlaceholders placeholders = null;
+    private AsureMarriagesPlaceholders placeholders = null;
 
     @Override
     public void onLoad() {
@@ -44,11 +44,11 @@ public class VineriumMarriages extends JavaPlugin {
 
         // Подключаем плейсхолдеры
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            placeholders = new VinMarriagePlaceholders(this);
+            placeholders = new AsureMarriagesPlaceholders(this);
             placeholders.register();
         } else {
             placeholders = null;
-            VinUtils.sendDebugMessage(0,"<yellow>Could not find PlaceholderAPI! Placeholders won't be registered.");
+            AsureUtils.sendDebugMessage(0,"<yellow>Could not find PlaceholderAPI! Placeholders won't be registered.");
         }
 
         //Создаем задачу регулярного сохранения данных раз в полчаса
@@ -58,16 +58,16 @@ public class VineriumMarriages extends JavaPlugin {
     @Override
     public void onDisable() {
         saveData();
-        VinUtils.updateJarFile(this,this.getFile());
+        AsureUtils.updateJarFile(this,this.getFile());
     }
 
     public void loadData() {
         reloadConfig();
 
         String selectedLang = getConfig().getString("Marriages.Language");
-        HashMap<Key,String> langLines = VineriumLib.inst().getLangManager().loadLanguageFile(this,
+        HashMap<Key,String> langLines = AsureLib.inst().getLangManager().loadLanguageFile(this,
                 plugin.getDataFolder().getPath() + File.separator + "lang" + File.separator + selectedLang + ".yml");
-        VineriumLib.inst().getLangManager().registerLangLines(langLines);
+        AsureLib.inst().getLangManager().registerLangLines(langLines);
 
         long startTime = System.currentTimeMillis();
         long prevTime = startTime;
@@ -76,17 +76,17 @@ public class VineriumMarriages extends JavaPlugin {
         marriedPlayersManager.loadMarriedPlayerNames(this);
         marriedPlayersManager.getTimers().clear();
         long time = System.currentTimeMillis();
-        VinUtils.sendDebugMessage(0,"Loaded " + marriedPlayersManager.getMarriedPlayerNames().size() + " married players. ("+(time-prevTime)+" ms)");
+        AsureUtils.sendDebugMessage(0,"Loaded " + marriedPlayersManager.getMarriedPlayerNames().size() + " married players. ("+(time-prevTime)+" ms)");
         prevTime = System.currentTimeMillis();
     }
 
     public void saveData() {
-        VinUtils.sendDebugMessage(0,"Saving married players data...");
+        AsureUtils.sendDebugMessage(0,"Saving married players data...");
         marriedPlayersManager.saveMarriedPlayerData(this);
-        VinUtils.sendDebugMessage(0,"Saved "+marriedPlayersManager.getMarriedPlayerNames().size()+" married players.");
+        AsureUtils.sendDebugMessage(0,"Saved "+marriedPlayersManager.getMarriedPlayerNames().size()+" married players.");
     }
 
-    public static VineriumMarriages inst() {
+    public static AsureMarriages inst() {
         return plugin;
     }
 

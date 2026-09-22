@@ -17,6 +17,3 @@ Marriages:
     - entity.villager.trade
     - entity.villager.celebrate
     - entity.villager.no
-  CandleDamage:
-    Enabled: true
-    RequiresSneaking: true

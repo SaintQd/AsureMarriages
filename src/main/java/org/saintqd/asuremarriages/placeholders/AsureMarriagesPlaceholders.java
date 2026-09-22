@@ -1,15 +1,15 @@
-package org.saintqd.vineriummarriages.placeholders;
+package org.saintqd.asuremarriages.placeholders;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.saintqd.vineriummarriages.VineriumMarriages;
+import org.saintqd.asuremarriages.AsureMarriages;
 
-public class VinMarriagePlaceholders extends PlaceholderExpansion {
+public class AsureMarriagesPlaceholders extends PlaceholderExpansion {
 
-    private final VineriumMarriages plugin;
+    private final AsureMarriages plugin;
 
-    public VinMarriagePlaceholders(VineriumMarriages plugin){
+    public AsureMarriagesPlaceholders(AsureMarriages plugin){
         this.plugin = plugin;
     }
 
@@ -30,7 +30,7 @@ public class VinMarriagePlaceholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier(){
-        return "vineriummarriages";
+        return "asuremarriages";
     }
 
     @Override
@@ -52,7 +52,7 @@ public class VinMarriagePlaceholders extends PlaceholderExpansion {
 
         MARRY_NAME {
             @Override
-            public String placeholderResult(VineriumMarriages plugin, Player player) {
+            public String placeholderResult(AsureMarriages plugin, Player player) {
                 String partnerName = plugin.getMarriedPlayersManager().getMarriedPlayerNames().get(player.getName());
                 if (partnerName != null)
                     return partnerName;
@@ -60,6 +60,6 @@ public class VinMarriagePlaceholders extends PlaceholderExpansion {
             }
         };
 
-        public abstract String placeholderResult(VineriumMarriages plugin, Player player);
+        public abstract String placeholderResult(AsureMarriages plugin, Player player);
     }
 }

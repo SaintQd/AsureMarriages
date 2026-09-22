@@ -1,11 +1,11 @@
-name: VineriumMarriages
+name: AsureMarriages
 version: '1.0'
 author: SaintQd
-main: org.saintqd.vineriummarriages.VineriumMarriages
-api-version: 1.21.4
-depend: [VineriumLib]
+main: org.saintqd.asuremarriages.AsureMarriages
+api-version: '26.2'
+depend: [AsureLib]
 softdepend: [PlaceholderAPI,Vault]
 permissions:
-  vineriummarriages.admin:
+  asuremarriages.admin:
     description: Access to admin commands.
     default: op

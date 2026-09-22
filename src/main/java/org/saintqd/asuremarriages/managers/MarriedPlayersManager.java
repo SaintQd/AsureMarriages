@@ -1,4 +1,4 @@
-package org.saintqd.vineriummarriages.managers;
+package org.saintqd.asuremarriages.managers;
 
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
@@ -9,8 +9,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.saintqd.vineriumlib.utils.VinUtils;
-import org.saintqd.vineriummarriages.VineriumMarriages;
+import org.saintqd.asurelib.utils.AsureUtils;
+import org.saintqd.asuremarriages.AsureMarriages;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class MarriedPlayersManager {
         return marriedPlayerNames;
     }
 
-    public void updateParams(VineriumMarriages plugin) {
+    public void updateParams(AsureMarriages plugin) {
         this.timers = new HashMap<>();
         acceptInviteTime = plugin.getConfig().getLong("Marriages.AcceptInviteTime",300);
         offerMaxDistance = plugin.getConfig().getDouble("Marriages.OfferMaxDistance",10);
@@ -66,12 +66,12 @@ public class MarriedPlayersManager {
         woohooSoundMaxPitch = plugin.getConfig().getDouble("Marriages.WoohooSoundMaxPitch",1.2);
     }
 
-    public void loadMarriedPlayerNames(VineriumMarriages plugin) {
+    public void loadMarriedPlayerNames(AsureMarriages plugin) {
         this.marriedPlayerNames = new HashMap<>();
         File marriedPlayerNamesFile = new File(plugin.getDataFolder().getPath() + File.separator + "MarriedPlayerNames.yml");
         File parent = marriedPlayerNamesFile.getParentFile();
         if (parent != null && !parent.exists() && !parent.mkdirs()) {
-            VinUtils.sendDebugMessage(0,"<red>Couldn't create married players file!");
+            AsureUtils.sendDebugMessage(0,"<red>Couldn't create married players file!");
             return;
         }
         YamlConfiguration marriedPlayersYaml = YamlConfiguration.loadConfiguration(marriedPlayerNamesFile);
@@ -84,14 +84,14 @@ public class MarriedPlayersManager {
         }
     }
 
-    public void saveMarriedPlayerData(VineriumMarriages plugin) {
+    public void saveMarriedPlayerData(AsureMarriages plugin) {
         File marriedPlayerNamesFile = new File(plugin.getDataFolder().getPath() + File.separator + "MarriedPlayerNames.yml");
         YamlConfiguration marriedPlayersYaml = YamlConfiguration.loadConfiguration(marriedPlayerNamesFile);
         marriedPlayersYaml.set("MarriedPlayers",null);
         Set<String> alreadyAddedNames = new HashSet<>();
         try {
             if (!marriedPlayerNamesFile.exists() && !marriedPlayerNamesFile.createNewFile())
-                VinUtils.sendDebugMessage(0,"<red>Couldn't save married players file to "+ marriedPlayerNamesFile +"!");
+                AsureUtils.sendDebugMessage(0,"<red>Couldn't save married players file to "+ marriedPlayerNamesFile +"!");
             for (String playerName : marriedPlayerNames.keySet()) {
                 if (!alreadyAddedNames.contains(playerName) && !alreadyAddedNames.contains(marriedPlayerNames.get(playerName))) {
                     marriedPlayersYaml.set("MarriedPlayers." + playerName, marriedPlayerNames.get(playerName));
@@ -101,7 +101,7 @@ public class MarriedPlayersManager {
             }
             marriedPlayersYaml.save(marriedPlayerNamesFile);
         } catch (IOException e) {
-            VinUtils.sendDebugMessage(0,"<red>Couldn't save married players file to "+ marriedPlayerNamesFile +"!");
+            AsureUtils.sendDebugMessage(0,"<red>Couldn't save married players file to "+ marriedPlayerNamesFile +"!");
         }
     }
 

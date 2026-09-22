@@ -1,4 +1,4 @@
-package org.saintqd.vineriummarriages.commands;
+package org.saintqd.asuremarriages.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -25,10 +25,10 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.intellij.lang.annotations.Subst;
-import org.saintqd.vineriumlib.VineriumLib;
-import org.saintqd.vineriumlib.utils.VinUtils;
-import org.saintqd.vineriummarriages.VineriumMarriages;
-import org.saintqd.vineriummarriages.managers.MarriedPlayersManager;
+import org.saintqd.asurelib.AsureLib;
+import org.saintqd.asurelib.utils.AsureUtils;
+import org.saintqd.asuremarriages.AsureMarriages;
+import org.saintqd.asuremarriages.managers.MarriedPlayersManager;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -36,26 +36,26 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MarryCommandsManager {
 
-    public static void setupCommands(VineriumMarriages plugin) {
+    public static void setupCommands(AsureMarriages plugin) {
 
         LifecycleEventManager<Plugin> manager = plugin.getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Commands commands = event.registrar();
             commands.register(
-                    Commands.literal("vinmarry")
+                    Commands.literal("asuremarry")
                             .executes(ctx -> {
                                 helpCommand(ctx.getSource().getSender(),1);
                                 return Command.SINGLE_SUCCESS;
                             })
                             .then(Commands.literal("reload")
-                                    .requires(predicate -> predicate.getSender().hasPermission("vineriummarriages.admin"))
+                                    .requires(predicate -> predicate.getSender().hasPermission("asuremarriages.admin"))
                                     .executes(ctx -> {
                                         reloadCommand(ctx.getSource().getSender());
                                         return Command.SINGLE_SUCCESS;
                                     })
                             )
                             .then(Commands.literal("savedata")
-                                    .requires(predicate -> predicate.getSender().hasPermission("vineriummarriages.admin"))
+                                    .requires(predicate -> predicate.getSender().hasPermission("asuremarriages.admin"))
                                     .executes(ctx -> {
                                         saveDataCommand(ctx.getSource().getSender());
                                         return Command.SINGLE_SUCCESS;
@@ -74,14 +74,14 @@ public class MarryCommandsManager {
                                     )
                             )
                             .then(Commands.literal("offer")
-                                    .requires(predicate -> predicate.getSender().hasPermission("vineriummarriages.offer"))
+                                    .requires(predicate -> predicate.getSender().hasPermission("asuremarriages.offer"))
                                     .then(Commands.argument("player", ArgumentTypes.player())
                                             .executes(ctx -> {
                                                 offerCommand(ctx.getSource().getSender(),ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst(),null,false);
                                                 return Command.SINGLE_SUCCESS;
                                             })
                                             .then(Commands.argument("secondplayer",ArgumentTypes.player())
-                                                    .requires(predicate -> predicate.getSender().hasPermission("vineriummarriages.admin"))
+                                                    .requires(predicate -> predicate.getSender().hasPermission("asuremarriages.admin"))
                                                     .executes(ctx -> {
                                                         offerCommand(
                                                                 ctx.getSource().getSender(),
@@ -105,13 +105,13 @@ public class MarryCommandsManager {
                                     )
                             )
                             .then(Commands.literal("divorce")
-                                    .requires(predicate -> predicate.getSender().hasPermission("vineriummarriages.divorce"))
+                                    .requires(predicate -> predicate.getSender().hasPermission("asuremarriages.divorce"))
                                     .executes(ctx -> {
                                         divorceCommand(ctx.getSource().getSender(),null);
                                         return Command.SINGLE_SUCCESS;
                                     })
                                     .then(Commands.argument("player",ArgumentTypes.player())
-                                            .requires(predicate -> predicate.getSender().hasPermission("vineriummarriages.admin"))
+                                            .requires(predicate -> predicate.getSender().hasPermission("asuremarriages.admin"))
                                             .executes(ctx -> {
                                                 divorceCommand(ctx.getSource().getSender(),ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst());
                                                 return Command.SINGLE_SUCCESS;
@@ -120,7 +120,7 @@ public class MarryCommandsManager {
                             )
                             .then(Commands.literal("accept")
                                     .requires(predicate -> predicate.getSender() instanceof Player player
-                                            && !VineriumMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
+                                            && !AsureMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
                                     .executes(ctx -> {
                                         acceptMarryCommand(ctx.getSource().getSender());
                                         return Command.SINGLE_SUCCESS;
@@ -142,8 +142,8 @@ public class MarryCommandsManager {
                             )
                             .then(Commands.literal("ender")
                                     .requires(predicate -> predicate.getSender() instanceof Player player
-                                            && predicate.getSender().hasPermission("vineriummarriages.ender")
-                                            && VineriumMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
+                                            && predicate.getSender().hasPermission("asuremarriages.ender")
+                                            && AsureMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
                                     .executes(ctx -> {
                                         enderChestCommand(ctx.getSource().getSender());
                                         return Command.SINGLE_SUCCESS;
@@ -151,8 +151,8 @@ public class MarryCommandsManager {
                             )
                             .then(Commands.literal("tp")
                                     .requires(predicate -> predicate.getSender() instanceof Player player
-                                            && predicate.getSender().hasPermission("vineriummarriages.tp")
-                                            && VineriumMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
+                                            && predicate.getSender().hasPermission("asuremarriages.tp")
+                                            && AsureMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
                                     .executes(ctx -> {
                                         teleportCommand(ctx.getSource().getSender());
                                         return Command.SINGLE_SUCCESS;
@@ -160,8 +160,8 @@ public class MarryCommandsManager {
                             )
                             .then(Commands.literal("kiss")
                                     .requires(predicate -> predicate.getSender() instanceof Player player
-                                            && predicate.getSender().hasPermission("vineriummarriages.kiss")
-                                            && VineriumMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
+                                            && predicate.getSender().hasPermission("asuremarriages.kiss")
+                                            && AsureMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
                                     .executes(ctx -> {
                                         kissCommand(ctx.getSource().getSender());
                                         return Command.SINGLE_SUCCESS;
@@ -169,8 +169,8 @@ public class MarryCommandsManager {
                             )
                             .then(Commands.literal("woohoo")
                                     .requires(predicate -> predicate.getSender() instanceof Player player
-                                            && predicate.getSender().hasPermission("vineriummarriages.woohoo")
-                                            && VineriumMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
+                                            && predicate.getSender().hasPermission("asuremarriages.woohoo")
+                                            && AsureMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().containsKey(player.getName()))
                                     .executes(ctx -> {
                                         woohooCommand(ctx.getSource().getSender());
                                         return Command.SINGLE_SUCCESS;
@@ -183,42 +183,42 @@ public class MarryCommandsManager {
     }
 
     private static void reloadCommand(CommandSender sender) {
-        VineriumMarriages.inst().loadData();
-        sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_reload"));
+        AsureMarriages.inst().loadData();
+        sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_reload"));
     }
 
     private static void saveDataCommand(CommandSender sender) {
-        VineriumMarriages.inst().saveData();
-        sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_save_data"));
+        AsureMarriages.inst().saveData();
+        sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_save_data"));
     }
 
     private static void helpCommand(CommandSender sender, int page) {
         if (page < 0 || page > 1) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_wrong_page"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_wrong_page"));
             return;
         }
         switch (page) {
             case 1 -> {
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_header",Integer.toString(page)));
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_help"));
-                if (sender.hasPermission("vineriummarriages.offer"))
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_offer"));
-                if (sender.hasPermission("vineriummarriages.divorce"))
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_divorce"));
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_accept"));
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_decline"));
-                if (sender.hasPermission("vineriummarriages.tp"))
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_tp"));
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_confirm"));
-                if (sender.hasPermission("vineriummarriages.ender"))
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_ender"));
-                if (sender.hasPermission("vineriummarriages.kiss"))
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_kiss"));
-                if (sender.hasPermission("vineriummarriages.woohoo"))
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_woohoo"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_header",Integer.toString(page)));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_help"));
+                if (sender.hasPermission("asuremarriages.offer"))
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_offer"));
+                if (sender.hasPermission("asuremarriages.divorce"))
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_divorce"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_accept"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_decline"));
+                if (sender.hasPermission("asuremarriages.tp"))
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_tp"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_confirm"));
+                if (sender.hasPermission("asuremarriages.ender"))
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_ender"));
+                if (sender.hasPermission("asuremarriages.kiss"))
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_kiss"));
+                if (sender.hasPermission("asuremarriages.woohoo"))
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_woohoo"));
                 if (sender.hasPermission("asurecore.admin")) {
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_admin_offer"));
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"command_help_command_admin_divorce"));
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_admin_offer"));
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"command_help_command_admin_divorce"));
                 }
             }
         }
@@ -226,18 +226,18 @@ public class MarryCommandsManager {
 
     private static void offerCommand(CommandSender sender, Player offeredPlayer, Player secondPlayer, boolean silent) {
         if (!(sender instanceof Player) && secondPlayer == null) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_only_by_player"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_only_by_player"));
             return;
         }
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
-        String offeredPlayerMarryPartner = VineriumMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().get(offeredPlayer.getName());
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
+        String offeredPlayerMarryPartner = AsureMarriages.inst().getMarriedPlayersManager().getMarriedPlayerNames().get(offeredPlayer.getName());
 
         if (offeredPlayerMarryPartner != null && secondPlayer == null) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"player_already_married"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"player_already_married"));
             return;
         }
         if (offeredPlayer == sender) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"cant_marry_yourself"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"cant_marry_yourself"));
             return;
         }
         if (secondPlayer == null) {
@@ -247,36 +247,36 @@ public class MarryCommandsManager {
             if (offerDistance > 0) {
                 if (senderPlayer.getWorld() != offeredPlayer.getWorld() || senderPlayer.getLocation().distance(offeredPlayer.getLocation())
                         > offerDistance) {
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_too_far"));
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"max_offer_distance",Double.toString(offerDistance)));
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_too_far"));
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"max_offer_distance",Double.toString(offerDistance)));
                     return;
                 }
             }
             long inviteTimeInSeconds = inviteTime / 20;
             HashMap<Player,Pair<String,Long>> offerTimers = marriedPlayersManager.getTimers().getOrDefault("MarryOffer",new HashMap<>());
             Pair<String,Long> variable = offerTimers.getOrDefault(senderPlayer,new Pair<>(senderPlayer.getName(),0L));
-            if (variable.getSecond() > VinUtils.getCurrentTick())
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"player_already_has_offer"));
+            if (variable.getSecond() > AsureUtils.getCurrentTick())
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"player_already_has_offer"));
 
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"offer_sent",offeredPlayer.getName(),Long.toString(inviteTimeInSeconds)));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"offer_sent",offeredPlayer.getName(),Long.toString(inviteTimeInSeconds)));
             senderPlayer.playSound(senderPlayer.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1F, 0.5F);
 
-            offerTimers.put(offeredPlayer,new Pair<>(senderPlayer.getName(),VinUtils.getCurrentTick() + inviteTime));
+            offerTimers.put(offeredPlayer,new Pair<>(senderPlayer.getName(),AsureUtils.getCurrentTick() + inviteTime));
             marriedPlayersManager.getTimers().put("MarryOffer",offerTimers);
             offeredPlayer.playSound(offeredPlayer, Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1, 2);
-            offeredPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"offer_received",senderPlayer.getName(),Long.toString(inviteTimeInSeconds)));
+            offeredPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"offer_received",senderPlayer.getName(),Long.toString(inviteTimeInSeconds)));
 
-            Component component = VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"accept_button")
-                    .clickEvent(ClickEvent.runCommand("/vinmarry accept"))
-                    .hoverEvent(HoverEvent.showText(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"accept_button_hover")))
+            Component component = AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"accept_button")
+                    .clickEvent(ClickEvent.runCommand("/asuremarry accept"))
+                    .hoverEvent(HoverEvent.showText(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"accept_button_hover")))
                     .append(Component.text(" / ").color(NamedTextColor.GRAY))
-                    .append(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"decline_button")
-                            .clickEvent(ClickEvent.runCommand("/vinmarry decline"))
-                            .hoverEvent(HoverEvent.showText(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"decline_button_hover")))
+                    .append(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"decline_button")
+                            .clickEvent(ClickEvent.runCommand("/asuremarry decline"))
+                            .hoverEvent(HoverEvent.showText(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"decline_button_hover")))
                     );
 
             offeredPlayer.sendMessage(component);
-            offeredPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"offer_hint"));
+            offeredPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"offer_hint"));
         }
         else {
             marriedPlayersManager.getMarriedPlayerNames().put(offeredPlayer.getName(),secondPlayer.getName());
@@ -289,12 +289,12 @@ public class MarryCommandsManager {
 
             offeredPlayer.playSound(offeredPlayer,Sound.UI_TOAST_CHALLENGE_COMPLETE,SoundCategory.PLAYERS,1f,1f);
             secondPlayer.playSound(secondPlayer,Sound.UI_TOAST_CHALLENGE_COMPLETE,SoundCategory.PLAYERS,1f,1f);
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"marriage_admin",offeredPlayer.getName(),secondPlayer.getName()));
-            offeredPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"marriage_accepted",secondPlayer.getName()));
-            secondPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"marriage_accepted",offeredPlayer.getName()));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"marriage_admin",offeredPlayer.getName(),secondPlayer.getName()));
+            offeredPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"marriage_accepted",secondPlayer.getName()));
+            secondPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"marriage_accepted",offeredPlayer.getName()));
 
             if (!silent)
-                Audience.audience(Bukkit.getOnlinePlayers()).sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"marriage_announcement",offeredPlayer.getName(),secondPlayer.getName()));
+                Audience.audience(Bukkit.getOnlinePlayers()).sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"marriage_announcement",offeredPlayer.getName(),secondPlayer.getName()));
 
             offeredPlayer.updateCommands();
             secondPlayer.updateCommands();
@@ -302,48 +302,48 @@ public class MarryCommandsManager {
     }
 
     private static void divorceCommand(CommandSender sender, Player player) {
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
         if (!(sender instanceof Player) && player == null) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_only_by_player"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_only_by_player"));
             return;
         }
         if (player == null) {
             Player senderPlayer = (Player) sender;
             if (marriedPlayersManager.getMarriedPlayerNames().get(senderPlayer.getName()) == null) {
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"not_married"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"not_married"));
                 return;
             }
             HashMap<Player,Pair<String,Long>> divorceTimers = marriedPlayersManager.getTimers().getOrDefault("MarryDivorce",new HashMap<>());
-            Pair<String,Long> variable = new Pair<>(senderPlayer.getName(),VinUtils.getCurrentTick() + 2400);
+            Pair<String,Long> variable = new Pair<>(senderPlayer.getName(),AsureUtils.getCurrentTick() + 2400);
             divorceTimers.put(senderPlayer,variable);
             marriedPlayersManager.getTimers().put("MarryDivorce",divorceTimers);
 
-            Component component = VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"divorce_button")
-                    .clickEvent(ClickEvent.runCommand("/vinmarry confirm"))
-                    .hoverEvent(HoverEvent.showText(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"divorce_buttonHover"))
+            Component component = AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"divorce_button")
+                    .clickEvent(ClickEvent.runCommand("/asuremarry confirm"))
+                    .hoverEvent(HoverEvent.showText(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"divorce_buttonHover"))
                     );
 
             senderPlayer.sendMessage(component);
-            senderPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"divorce_hint"));
+            senderPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"divorce_hint"));
         }
         else {
             if (marriedPlayersManager.getMarriedPlayerNames().get(player.getName()) == null) {
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"player_not_married"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"player_not_married"));
                 return;
             }
             String secondPlayerName = marriedPlayersManager.getMarriedPlayerNames().get(player.getName());
             Player secondPlayer = Bukkit.getPlayer(secondPlayerName);
             if (secondPlayer != null) {
                 secondPlayer.playSound(secondPlayer,Sound.BLOCK_GLASS_BREAK,SoundCategory.PLAYERS,1f,1f);
-                secondPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"divorce_accepted",player.getName()));
+                secondPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"divorce_accepted",player.getName()));
                 secondPlayer.updateCommands();
             }
 
             marriedPlayersManager.getMarriedPlayerNames().remove(secondPlayerName);
             marriedPlayersManager.getMarriedPlayerNames().remove(player.getName());
             player.playSound(player,Sound.BLOCK_GLASS_BREAK,SoundCategory.PLAYERS,1f,1f);
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"divorce_admin",player.getName()));
-            player.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"divorce_accepted",secondPlayerName));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"divorce_admin",player.getName()));
+            player.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"divorce_accepted",secondPlayerName));
 
             player.updateCommands();
         }
@@ -352,16 +352,16 @@ public class MarryCommandsManager {
     private static void acceptMarryCommand(CommandSender sender) {
 
         if (!(sender instanceof Player senderPlayer)) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_only_by_player"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_only_by_player"));
             return;
         }
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
 
         HashMap<Player,Pair<String,Long>> offerTimers = marriedPlayersManager.getTimers().getOrDefault("MarryOffer",new HashMap<>());
         Pair<String,Long> variable = offerTimers.getOrDefault(senderPlayer,new Pair<>(senderPlayer.getName(),0L));
 
-        if (variable.getSecond() < VinUtils.getCurrentTick()) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"no_active_offer"));
+        if (variable.getSecond() < AsureUtils.getCurrentTick()) {
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"no_active_offer"));
             return;
         }
         String offeredPlayerName = variable.getFirst();
@@ -369,13 +369,13 @@ public class MarryCommandsManager {
         if (offeredPlayer == null) {
             offerTimers.remove(senderPlayer);
             marriedPlayersManager.getTimers().put("MarryOffer",offerTimers);
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"player_is_offline"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"player_is_offline"));
             return;
         }
         if (marriedPlayersManager.getMarriedPlayerNames().containsKey(offeredPlayerName)) {
             offerTimers.remove(senderPlayer);
             marriedPlayersManager.getTimers().put("MarryOffer",offerTimers);
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"player_already_married"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"player_already_married"));
             return;
         }
 
@@ -388,8 +388,8 @@ public class MarryCommandsManager {
 
         senderPlayer.playSound(senderPlayer,Sound.UI_TOAST_CHALLENGE_COMPLETE,SoundCategory.PLAYERS,1f,1f);
         offeredPlayer.playSound(senderPlayer,Sound.UI_TOAST_CHALLENGE_COMPLETE,SoundCategory.PLAYERS,1f,1f);
-        sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"marriage_accepted",senderPlayer.getName()));
-        offeredPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"marriage_accepted",offeredPlayer.getName()));
+        sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"marriage_accepted",senderPlayer.getName()));
+        offeredPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"marriage_accepted",offeredPlayer.getName()));
 
         offeredPlayer.updateCommands();
         senderPlayer.updateCommands();
@@ -397,36 +397,36 @@ public class MarryCommandsManager {
 
     private static void declineMarryCommand(CommandSender sender) {
         if (!(sender instanceof Player senderPlayer)) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_only_by_player"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_only_by_player"));
             return;
         }
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
 
         HashMap<Player,Pair<String,Long>> offerTimers = marriedPlayersManager.getTimers().getOrDefault("MarryOffer",new HashMap<>());
         Pair<String,Long> variable = offerTimers.getOrDefault(senderPlayer,new Pair<>(senderPlayer.getName(),0L));
 
-        if (variable.getSecond() < VinUtils.getCurrentTick()) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"no_active_offer"));
+        if (variable.getSecond() < AsureUtils.getCurrentTick()) {
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"no_active_offer"));
             return;
         }
         offerTimers.remove(senderPlayer);
         marriedPlayersManager.getTimers().put("MarryOffer",offerTimers);
 
-        sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"offer_declined"));
+        sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"offer_declined"));
     }
 
     private static void confirmCommand(CommandSender sender) {
         if (!(sender instanceof Player senderPlayer)) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_only_by_player"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_only_by_player"));
             return;
         }
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
 
         HashMap<Player,Pair<String,Long>> offerTimers = marriedPlayersManager.getTimers().getOrDefault("MarryDivorce",new HashMap<>());
         Pair<String,Long> variable = offerTimers.getOrDefault(senderPlayer,new Pair<>(senderPlayer.getName(),0L));
 
-        if (variable.getSecond() < VinUtils.getCurrentTick()) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"no_active_action"));
+        if (variable.getSecond() < AsureUtils.getCurrentTick()) {
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"no_active_action"));
             return;
         }
 
@@ -434,11 +434,11 @@ public class MarryCommandsManager {
         Player secondPlayer = Bukkit.getPlayer(secondPlayerName);
         if (secondPlayer != null) {
             secondPlayer.playSound(secondPlayer,Sound.BLOCK_GLASS_BREAK,SoundCategory.PLAYERS,1f,1f);
-            secondPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"divorce_accepted",senderPlayer.getName()));
+            secondPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"divorce_accepted",senderPlayer.getName()));
             secondPlayer.updateCommands();
         }
         senderPlayer.playSound(senderPlayer,Sound.BLOCK_GLASS_BREAK,SoundCategory.PLAYERS,1f,1f);
-        senderPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"divorce_accepted",secondPlayerName));
+        senderPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"divorce_accepted",secondPlayerName));
         marriedPlayersManager.getMarriedPlayerNames().remove(secondPlayerName);
         marriedPlayersManager.getMarriedPlayerNames().remove(senderPlayer.getName());
         senderPlayer.updateCommands();
@@ -446,38 +446,38 @@ public class MarryCommandsManager {
 
     private static void enderChestCommand(CommandSender sender) {
         if (!(sender instanceof Player senderPlayer)) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_only_by_player"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_only_by_player"));
             return;
         }
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
 
         String secondPlayerName = marriedPlayersManager.getMarriedPlayerNames().get(senderPlayer.getName());
         String secondPlayerPartner = marriedPlayersManager.getMarriedPlayerNames().get(secondPlayerName);
         if (secondPlayerPartner == null || !secondPlayerPartner.equals(senderPlayer.getName())) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"player_not_married_with_sender"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"player_not_married_with_sender"));
             marriedPlayersManager.getMarriedPlayerNames().remove(senderPlayer.getName());
             return;
         }
 
         senderPlayer.playSound(senderPlayer, Sound.BLOCK_CHEST_OPEN, SoundCategory.PLAYERS, 1, 1);
-        if (VineriumLib.inst().getVaultManager() != null) {
-            VineriumLib.inst().getVaultManager().getPermissionProvider().playerAdd(senderPlayer, "cmi.command.ender");
+        if (AsureLib.inst().getVaultManager() != null) {
+            AsureLib.inst().getVaultManager().getPermissionProvider().playerAdd(senderPlayer, "cmi.command.ender");
             senderPlayer.performCommand("cmi ender " + marriedPlayersManager.getMarriedPlayerNames().get(senderPlayer.getName()));
-            VineriumLib.inst().getVaultManager().getPermissionProvider().playerRemove(senderPlayer, "cmi.command.ender");
+            AsureLib.inst().getVaultManager().getPermissionProvider().playerRemove(senderPlayer, "cmi.command.ender");
         }
     }
 
     private static void teleportCommand(CommandSender sender) {
         if (!(sender instanceof Player senderPlayer)) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_only_by_player"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_only_by_player"));
             return;
         }
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
 
         String secondPlayerName = marriedPlayersManager.getMarriedPlayerNames().get(senderPlayer.getName());
         String secondPlayerPartner = marriedPlayersManager.getMarriedPlayerNames().get(secondPlayerName);
         if (secondPlayerPartner == null || !secondPlayerPartner.equals(senderPlayer.getName())) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"player_not_married_with_sender"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"player_not_married_with_sender"));
             marriedPlayersManager.getMarriedPlayerNames().remove(senderPlayer.getName());
             return;
         }
@@ -485,44 +485,44 @@ public class MarryCommandsManager {
         Player secondPlayer = Bukkit.getPlayer(secondPlayerName);
         if (secondPlayer != null) {
             senderPlayer.teleport(secondPlayer);
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"tp_message"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"tp_message"));
         }
         else {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"partner_Is_offline"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"partner_Is_offline"));
         }
     }
 
     private static void kissCommand(CommandSender sender) {
         if (!(sender instanceof Player senderPlayer)) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_only_by_player"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_only_by_player"));
             return;
         }
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
 
         String secondPlayerName = marriedPlayersManager.getMarriedPlayerNames().get(senderPlayer.getName());
         String secondPlayerPartner = marriedPlayersManager.getMarriedPlayerNames().get(secondPlayerName);
         if (secondPlayerPartner == null || !secondPlayerPartner.equals(senderPlayer.getName())) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"player_not_married_with_sender"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"player_not_married_with_sender"));
             marriedPlayersManager.getMarriedPlayerNames().remove(senderPlayer.getName());
             return;
         }
 
         Player secondPlayer = Bukkit.getPlayer(secondPlayerName);
         if (secondPlayer == null) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"partner_Is_offline"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"partner_Is_offline"));
             return;
         }
         double kissDistance = marriedPlayersManager.getKissMaxDistance();
         if (kissDistance > 0) {
             if (senderPlayer.getWorld() != secondPlayer.getWorld() || senderPlayer.getLocation().distance(secondPlayer.getLocation()) > kissDistance) {
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_too_far"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_too_far"));
                 return;
             }
         }
         boolean kissHealCheck = true;
         HashMap<Player,Pair<String,Long>> kissTimers = marriedPlayersManager.getTimers().getOrDefault("KissCooldown",new HashMap<>());
         Pair<String,Long> variable = kissTimers.getOrDefault(senderPlayer,new Pair<>(senderPlayer.getName(),0L));
-        if (variable.getSecond() >= VinUtils.getCurrentTick())
+        if (variable.getSecond() >= AsureUtils.getCurrentTick())
             kissHealCheck = false;
         if (kissHealCheck) {
             senderPlayer.heal(marriedPlayersManager.getKissHealAmount());
@@ -532,9 +532,9 @@ public class MarryCommandsManager {
         senderPlayer.getWorld().spawnParticle(Particle.HEART,senderPlayer.getX(),senderPlayer.getY()+1.7,senderPlayer.getZ(),10,0.2,0.2,0.2);
         secondPlayer.getWorld().spawnParticle(Particle.HEART,secondPlayer.getX(),secondPlayer.getY()+1.7,secondPlayer.getZ(),10,0.2,0.2,0.2);
 
-        senderPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"kiss_partner",secondPlayer.getName()));
-        secondPlayer.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"kissed_by_partner",senderPlayer.getName()));
-        variable = new Pair<>(null,VinUtils.getCurrentTick()+marriedPlayersManager.getKissCooldown());
+        senderPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"kiss_partner",secondPlayer.getName()));
+        secondPlayer.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"kissed_by_partner",senderPlayer.getName()));
+        variable = new Pair<>(null,AsureUtils.getCurrentTick()+marriedPlayersManager.getKissCooldown());
         kissTimers.put(senderPlayer,variable);
         kissTimers.put(secondPlayer,variable);
         marriedPlayersManager.getTimers().put("KissCooldown",kissTimers);
@@ -542,29 +542,29 @@ public class MarryCommandsManager {
 
     private static void woohooCommand(CommandSender sender) {
         if (!(sender instanceof Player senderPlayer)) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_only_by_player"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_only_by_player"));
             return;
         }
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
 
         String secondPlayerName = marriedPlayersManager.getMarriedPlayerNames().get(senderPlayer.getName());
         String secondPlayerPartner = marriedPlayersManager.getMarriedPlayerNames().get(secondPlayerName);
         if (secondPlayerPartner == null || !secondPlayerPartner.equals(senderPlayer.getName())) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"player_not_married_with_sender"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"player_not_married_with_sender"));
             marriedPlayersManager.getMarriedPlayerNames().remove(senderPlayer.getName());
             return;
         }
 
         Player secondPlayer = Bukkit.getPlayer(secondPlayerName);
         if (secondPlayer == null) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"partner_Is_offline"));
+            sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"partner_Is_offline"));
             return;
         }
         int woohooDistance = (int) marriedPlayersManager.getWoohooMaxDistance();
         int hungerCost = marriedPlayersManager.getWoohooHungerCost();
         if (woohooDistance > 0) {
             if (senderPlayer.getWorld() != secondPlayer.getWorld() || senderPlayer.getLocation().distance(secondPlayer.getLocation()) > woohooDistance) {
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"action_too_far"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"action_too_far"));
                 return;
             }
             if (marriedPlayersManager.isWoohooBedNeeded()) {
@@ -580,7 +580,7 @@ public class MarryCommandsManager {
                     }
                 }
                 if (!bedFound) {
-                    sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"bed_needed"));
+                    sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"bed_needed"));
                     return;
                 }
             }
@@ -588,30 +588,30 @@ public class MarryCommandsManager {
         if (marriedPlayersManager.getWoohooCooldown() > 0) {
             HashMap<Player,Pair<String,Long>> woohooTimers = marriedPlayersManager.getTimers().getOrDefault("woohoo_cooldown",new HashMap<>());
             Pair<String,Long> variable = woohooTimers.getOrDefault(senderPlayer,new Pair<>(senderPlayer.getName(),0L));
-            if (variable.getSecond() >= VinUtils.getCurrentTick()) {
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"woohoo_cooldown"));
+            if (variable.getSecond() >= AsureUtils.getCurrentTick()) {
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"woohoo_cooldown"));
                 return;
             }
         }
         if (hungerCost > 0) {
             if (senderPlayer.getFoodLevel() < hungerCost) {
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"woohoo_sender_not_enough_hunger"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"woohoo_sender_not_enough_hunger"));
                 return;
             }
             if (secondPlayer.getFoodLevel() < hungerCost) {
-                sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"woohoo_partner_not_enough_hunger"));
+                sender.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"woohoo_partner_not_enough_hunger"));
                 return;
             }
         }
         senderPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, (int) marriedPlayersManager.getWoohooLength(),4));
         secondPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, (int) marriedPlayersManager.getWoohooLength(),4));
-        Audience.audience(Set.of(senderPlayer,secondPlayer)).sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"woohoo_start"));
+        Audience.audience(Set.of(senderPlayer,secondPlayer)).sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"woohoo_start"));
         BukkitTask repeatableTask = new BukkitRunnable() {
             @Override
             public void run() {
                 woohooRepeatableTask(senderPlayer,secondPlayer,marriedPlayersManager);
             }
-        }.runTaskTimer(VineriumMarriages.inst(),0,10L);
+        }.runTaskTimer(AsureMarriages.inst(),0,10L);
 
         BukkitTask cancellingTask = new BukkitRunnable() {
             @Override
@@ -619,7 +619,7 @@ public class MarryCommandsManager {
                 finishWoohooTask(senderPlayer,secondPlayer);
                 repeatableTask.cancel();
             }
-        }.runTaskLater(VineriumMarriages.inst(),marriedPlayersManager.getWoohooLength());
+        }.runTaskLater(AsureMarriages.inst(),marriedPlayersManager.getWoohooLength());
     }
 
     private static void woohooRepeatableTask(Player firstPlayer, Player secondPlayer, MarriedPlayersManager marriedPlayersManager) {
@@ -640,10 +640,10 @@ public class MarryCommandsManager {
     }
 
     private static void finishWoohooTask(Player firstPlayer, Player secondPlayer) {
-        MarriedPlayersManager marriedPlayersManager = VineriumMarriages.inst().getMarriedPlayersManager();
+        MarriedPlayersManager marriedPlayersManager = AsureMarriages.inst().getMarriedPlayersManager();
         int hungerCost = marriedPlayersManager.getWoohooHungerCost();
         Audience playerAudience = Audience.audience(Set.of(firstPlayer,secondPlayer)) ;
-        playerAudience.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumMarriages.inst(),"woohoo_finish"));
+        playerAudience.sendMessage(AsureLib.inst().getLangManager().parseLangString(AsureMarriages.inst(),"woohoo_finish"));
 
         firstPlayer.setFoodLevel(firstPlayer.getFoodLevel()-hungerCost);
         secondPlayer.setFoodLevel(secondPlayer.getFoodLevel()-hungerCost);
@@ -661,7 +661,7 @@ public class MarryCommandsManager {
         audience.playSound(sound,secondPlayer);
 
         HashMap<Player,Pair<String,Long>> woohooTimers = marriedPlayersManager.getTimers().getOrDefault("woohoo_cooldown",new HashMap<>());
-        Pair<String,Long> variable = new Pair<>(null,VinUtils.getCurrentTick()+marriedPlayersManager.getWoohooCooldown());
+        Pair<String,Long> variable = new Pair<>(null,AsureUtils.getCurrentTick()+marriedPlayersManager.getWoohooCooldown());
         woohooTimers.put(firstPlayer,variable);
         woohooTimers.put(secondPlayer,variable);
         marriedPlayersManager.getTimers().put("woohoo_cooldown",woohooTimers);

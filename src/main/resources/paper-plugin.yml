@@ -1,12 +1,12 @@
-name: VineriumMarriages
+name: AsureMarriages
 version: '1.0'
 author: SaintQd
-main: org.saintqd.vineriummarriages.VineriumMarriages
-description: VineriumMarriages Plugin
-api-version: '1.21.4'
+main: org.saintqd.asuremarriages.AsureMarriages
+description: AsureMarriages Plugin
+api-version: '26.2'
 dependencies:
   server:
-    VineriumLib:
+    AsureLib:
       load: BEFORE
       required: true
     PlaceholderAPI:
@@ -16,24 +16,24 @@ dependencies:
       load: BEFORE
       required: false
 permissions:
-  vineriummarriages.admin:
+  asuremarriages.admin:
     description: Access to admin commands.
     default: op
-  vineriummarriages.offer:
+  asuremarriages.offer:
     description: Возможность совершать предложения брака.
     default: op
-  vineriummarriages.divorce:
+  asuremarriages.divorce:
     description: Возможность расторгать брак.
     default: true
-  vineriummarriages.ender:
+  asuremarriages.ender:
     description: Возможность открывать эндер-сундук партнёра.
     default: op
-  vineriummarriages.tp:
+  asuremarriages.tp:
     description: Возможность телепортироваться к партнёру.
     default: op
-  vineriummarriages.kiss:
+  asuremarriages.kiss:
     description: Возможность телепортироваться к партнёру.
     default: true
-  vineriummarriages.woohoo:
+  asuremarriages.woohoo:
     description: Возможность уединяться с партнёром.
     default: true
